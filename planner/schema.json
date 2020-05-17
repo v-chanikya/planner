@@ -1,0 +1,51 @@
+{
+    "$id":"http://chanikya.com/planner",
+    "$schema":"http://json-schema.org/draft-07/schema#",
+    "description":"This schema describes how is the data of planner saved",
+    "type":"object",
+    "properties":{
+        "tasks":{
+            "description":"the task",
+            "type":"array",
+            "properties":{
+                "task_id":{
+                    "description":"The id of the task used for constructing the tree",
+                    "type":"integer"
+                },
+                "title":{
+                    "description":"The title of the task",
+                    "type":"string"
+                },
+                "desc":{
+                    "description":"description of the task",
+                    "type":"string"
+                },
+                "start_time":{
+                    "description":"The start time of the task",
+                    "type":"string"
+                },
+                "end_time":{
+                    "description":"The end time of the task",
+                    "type":"string"
+                },
+                "planned_time":{
+                    "description":"The time allocated for this task",
+                    "type":"number"
+                },
+                "used_time":{
+                    "description":"The time used for this task",
+                    "type":"number"
+                },
+                "deadline_date":{
+                    "description":"deadline",
+                    "type":"string"
+                },
+                "retrospection":{
+                    "description":"End of week retro",
+                    "type":"string"
+                }
+            }
+        }
+    }
+}
+
