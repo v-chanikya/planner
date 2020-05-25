@@ -59,8 +59,7 @@
                         "description":"Task class/catogery can be something like learing, new ideas, office work etc",
                         "type":"array",
                         "items":{
-                            "description":"The name of the class",
-                            "type":"string"
+                            "type":"strings"
                         }
                     }
                 }
