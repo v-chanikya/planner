@@ -1,11 +1,8 @@
 import jsonschema
 import json
 
-from planner.Task import Task, find_task
-from planner.utils import printer
-
-DATA_FILE = "tasks.json"
-SCHEMA_FILE = "schema.json"
+from Task import Task, find_task
+from utils import printer
 
 def get_all_tasks(base_task:Task, tasks:list):
     """

@@ -1,9 +1,10 @@
 {
-    "tasks":[
+    "tasks": [
         {
-            "task_id":0,
-            "title":"Root task",
-            "desc":"Root task"
+            "task_id": 1,
+            "parent_id": 0,
+            "title": "Root task",
+            "desc": "Root task"
         }
     ]
 }
