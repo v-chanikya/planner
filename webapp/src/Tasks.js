@@ -82,50 +82,17 @@ class Task extends React.Component{
 }
 
 class TasksList extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            tasks : []
-        }
-    }
-    gettasks(API_path, task_id){
-        fetch(API_path, {
-            method: 'POST',
-            headers: {
-                'Content-Type':'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({"task_id":task_id})
-        })
-        .then(response=> response.json())
-        .then(data => data.length ? this.setState({"tasks":data}): true);
-    }
-    getchildtasks(task_id){
-        return this.gettasks("/api/getChildren", task_id)
-    }
-    getsiblingtasks(task_id){
-        return this.gettasks("/api/getSiblings", task_id);
-    }
-    componentDidMount(){
-        this.getchildtasks(0);
-    }
-    render(){
-        const tasks = this.state.tasks;
+        render(){
+        const tasks = this.props.tasks;
         return (
-            <IonGrid>
-                <IonRow>
-                    <IonCol size="12" sizeMd="6">
+                    <div style={{width:"100%"}}>
                         {tasks.map(task=>(
-                            <Task 
+                            <Task
                                 task_data={task}
-                                subtasks={task_id=>this.getchildtasks(task_id)}
-                                supertasks={task_id=>this.getsiblingtasks(task_id)}/>
+                                subtasks={this.props.subtasks}
+                                supertasks={this.props.supertasks}/>
                         ))}
-                    </IonCol>
-                    <IonCol size="12" sizeMd="6">
-                        <AddTask/>
-                    </IonCol>
-                </IonRow>
-            </IonGrid>
+                    </div>
             )
     }
 }
@@ -134,27 +101,86 @@ class Tasks extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            panestack: [null, null, null, null]
+            panestack: [
+                {"tasks":[]},
+                {"tasks":[]},
+                {"tasks":[]},
+                {"tasks":[]}
+            ]
         }
     }
+    gettasks(API_path, task_id, pane_no, req_type){
+        fetch(API_path, {
+            method: 'POST',
+            headers: {
+                'Content-Type':'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({"task_id":task_id})
+        })
+        .then(response=> response.json())
+        .then(data => {
+            var i = 0;
+            if (data.length > 0){
+                var task_pane = [{"tasks":data}];
+                var task_panes = this.state.panestack.slice();
+                if(req_type === "child"){
+                    task_panes = task_pane.concat(task_panes.slice(pane_no,4));
+                    for(i=0; pane_no > 0 && i < (3-(4-pane_no)); i++){
+                        task_panes.push({"tasks":[]});
+                    }
+                    this.setState({"panestack":task_panes});
+                } else if(req_type === "sibling"){
+                    task_panes.shift();
+                    task_panes.concat(task_pane);
+                    for(i=0; i < 4 - task_panes.length; i++){
+                        task_panes.push({"tasks":[]});
+                    }
+                    this.setState({"panestack":task_panes});
+                }
+            }
+            return;
+        });
+    }
+    getchildtasks(task_id, pane_no){
+        return this.gettasks("/api/getChildren", task_id, pane_no, "child");
+    }
+    getsiblingtasks(task_id, pane_no){
+        return this.gettasks("/api/getSiblings", task_id, pane_no, "sibling");
+    }
+    componentDidMount(){
+        this.getchildtasks(0,0);
+    }
+
     render(){
         return (
-            <IonSplitPane contentId="pane1" when="md">
-                <div contentId="pane1" >
-                    <p> content of pane 1</p>
+            <IonSplitPane contentId="pane1" when="xl">
+                <div contentId="pane1">
+                    <TasksList
+                        tasks={this.state.panestack[3].tasks}
+                        subtasks={task_id=>this.getchildtasks(task_id,3)}
+                        supertasks={task_id=>this.getsiblingtasks(task_id,3)} />
                 </div>
                 <div id="pane1">
                     <IonSplitPane contentId="pane2" when="lg">
                         <div contentId="pane2">
-                            <p>Second pane content</p>
+                            <TasksList
+                                tasks={this.state.panestack[2].tasks}
+                                subtasks={task_id=>this.getchildtasks(task_id,2)}
+                                supertasks={task_id=>this.getsiblingtasks(task_id,2)} />
                         </div>
                         <div id="pane2">
-                            <IonSplitPane contentId="pane3" when="xl">
+                            <IonSplitPane contentId="pane3" when="md">
                                 <div contentId="pane3">
-                                    <p>Third pane content</p>
+                                    <TasksList
+                                        tasks={this.state.panestack[1].tasks}
+                                        subtasks={task_id=>this.getchildtasks(task_id,1)}
+                                        supertasks={task_id=>this.getsiblingtasks(task_id,1)} />
                                 </div>
                                 <div id="pane3">
-                                    <p>Fourth pane content</p>
+                                    <TasksList
+                                        tasks={this.state.panestack[0].tasks}
+                                        subtasks={task_id=>this.getchildtasks(task_id,0)}
+                                        supertasks={task_id=>this.getsiblingtasks(task_id,0)} />
                                 </div>
                             </IonSplitPane>
                         </div>
