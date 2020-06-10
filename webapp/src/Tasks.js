@@ -7,6 +7,8 @@ import {add, chevronForward, chevronBack, caretForward} from 'ionicons/icons'
 import '@ionic/core/css/core.css'
 import '@ionic/core/css/ionic.bundle.css'
 
+import './Tasks.css'
+
 class AddTask extends React.Component{
     constructor(props){
         super(props);
@@ -72,22 +74,12 @@ class Task extends React.Component{
         return (
             <IonCard>
                 <IonRow>
-                    <IonCol size="8">
+                    <IonCol>
                         <IonCardHeader>
                             <IonCardTitle>{this.props.task_data.title}</IonCardTitle>
                             <IonCardSubtitle>Task name</IonCardSubtitle>
                         </IonCardHeader>
                         <IonCardContent>Task description</IonCardContent>
-                    </IonCol>
-                    <IonCol size="2">
-                        <IonList lines="none" className="ion-text-center">
-                            <IonItem >
-                                <IonIcon icon={chevronForward} size="small"/>
-                            </IonItem>
-                            <IonItem>
-                                <IonIcon icon={add} size="small"/>
-                            </IonItem>
-                        </IonList>
                     </IonCol>
                 </IonRow>
                 <hr/>
@@ -205,49 +197,41 @@ class Tasks extends React.Component{
 
     render(){
         return (
-            <IonSplitPane contentId="pane1" when="xl">
-                <div contentId="pane1">
+            <div>
+                <div id="pane3">
                     <TasksList
                         tasks={this.state.panestack[3].tasks}
                         subtasks={task_id=>this.getchildtasks(task_id,3)}
                         supertasks={task_id=>this.getsiblingtasks(task_id,3)}
                         newtaskpane={(task_id,add)=>this.newtaskpane(task_id,add,3)}/>
                 </div>
-                <div id="pane1">
-                    <IonSplitPane contentId="pane2" when="lg">
-                        <div contentId="pane2">
-                            <TasksList
-                                tasks={this.state.panestack[2].tasks}
-                                subtasks={task_id=>this.getchildtasks(task_id,2)}
-                                supertasks={task_id=>this.getsiblingtasks(task_id,2)}
-                                newtaskpane={(task_id,add)=>this.newtaskpane(task_id,add,2)}/>
-                        </div>
-                        <div id="pane2">
-                            <IonSplitPane contentId="pane3" when="md">
-                                <div contentId="pane3">
-                                    <TasksList
-                                        tasks={this.state.panestack[1].tasks}
-                                        subtasks={task_id=>this.getchildtasks(task_id,1)}
-                                        supertasks={task_id=>this.getsiblingtasks(task_id,1)}
-                                        newtaskpane={(task_id,add)=>this.newtaskpane(task_id,add,1)}/>
-                                </div>
-                                <div id="pane3">
-                                    {this.state.panestack[0].pane_type === "add"
-                                    ?<AddTask
-                                        parentid={this.state.panestack[0].task_id}
-                                        newtaskpane={(task_id,add)=>this.newtaskpane(task_id,add,this.state.panestack[0].pane_no)}/>
-                                    :<TasksList
-                                        tasks={this.state.panestack[0].tasks}
-                                        subtasks={task_id=>this.getchildtasks(task_id,0)}
-                                        supertasks={task_id=>this.getsiblingtasks(task_id,0)}
-                                        newtaskpane={(task_id,add)=>this.newtaskpane(task_id,add,0)}/>
-                                    }
-                                </div>
-                            </IonSplitPane>
-                        </div>
-                    </IonSplitPane>
+                <div id="pane2">
+                    <TasksList
+                        tasks={this.state.panestack[2].tasks}
+                        subtasks={task_id=>this.getchildtasks(task_id,2)}
+                        supertasks={task_id=>this.getsiblingtasks(task_id,2)}
+                        newtaskpane={(task_id,add)=>this.newtaskpane(task_id,add,2)}/>
                 </div>
-            </IonSplitPane>
+                <div id="pane1">
+                    <TasksList
+                        tasks={this.state.panestack[1].tasks}
+                        subtasks={task_id=>this.getchildtasks(task_id,1)}
+                        supertasks={task_id=>this.getsiblingtasks(task_id,1)}
+                        newtaskpane={(task_id,add)=>this.newtaskpane(task_id,add,1)}/>
+                </div>
+                <div id="pane0">
+                    {this.state.panestack[0].pane_type === "add"
+                    ?<AddTask
+                        parentid={this.state.panestack[0].task_id}
+                        newtaskpane={(task_id,add)=>this.newtaskpane(task_id,add,this.state.panestack[0].pane_no)}/>
+                    :<TasksList
+                        tasks={this.state.panestack[0].tasks}
+                        subtasks={task_id=>this.getchildtasks(task_id,0)}
+                        supertasks={task_id=>this.getsiblingtasks(task_id,0)}
+                        newtaskpane={(task_id,add)=>this.newtaskpane(task_id,add,0)}/>
+                    }
+                </div>
+            </div>
         )
     }
 }
