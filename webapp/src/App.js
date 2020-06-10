@@ -13,7 +13,7 @@ class App extends React.Component {
     render(){
         return (
             <IonApp>
-                <IonSplitPane contentId="app" when="md" className="menuSplitPane">
+                <IonSplitPane contentId="app" when="lg" className="menuSplitPane">
                     <Menu/>
                     <IonPage id="app">
                         <IonHeader>

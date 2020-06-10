@@ -14,8 +14,10 @@ def main():
     ROOT_DATA.base_task, ROOT_DATA.last_task_id = load_tasks_from_file(SCHEMA_FILE, DATA_FILE)
 
     # start the webapp
-    app.run(debug=True, host="0.0.0.0", port=80)
+    #app.run(debug=True, host="0.0.0.0", port=80)
+    app.run(host="0.0.0.0", port=80)
 
+    print("saving to file")
     # Save tasks to file
     save_to_file(ROOT_DATA.base_task, DATA_FILE)
 

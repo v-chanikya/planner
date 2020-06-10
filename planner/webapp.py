@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from flask_restful import Resource, Api, reqparse
-from Task import ROOT_DATA,find_task
+from Task import ROOT_DATA, find_task, create_task
 
 app = Flask("planner", static_folder="webapp/build/static", template_folder="webapp/build")
 api = Api(app)
@@ -27,8 +27,24 @@ class TaskSiblingAPI(Resource):
                 return [task.task for task in tasks.children]
         return [] 
 
+taskaddparser = reqparse.RequestParser()
+taskaddparser.add_argument("task_name",type=str)
+taskaddparser.add_argument("task_desc",type=str)
+taskaddparser.add_argument("deadline",type=str)
+taskaddparser.add_argument("parent_id",type=int)
+
+class TaskAddAPI(Resource):
+    def post(self):
+        args = taskaddparser.parse_args()
+        add_params = {"deadline_data":args["deadline"]}
+        if create_task(args["parent_id"], args["task_name"], args["task_desc"], add_params=add_params):
+            return {"status":"Added task successfully"}
+        else:
+            return {"status":"Failed to add task"}
+
 api.add_resource(TaskChildrenAPI, '/api/getChildren')
 api.add_resource(TaskSiblingAPI, '/api/getSiblings')
+api.add_resource(TaskAddAPI, '/api/addTask')
 
 @app.route("/",defaults={'path':''})
 @app.route("/<path:path>")

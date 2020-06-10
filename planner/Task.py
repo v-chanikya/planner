@@ -14,11 +14,9 @@ class Task(object):
     def __str__(self):
         return str(self.task_id) + "\n" + self.task["title"] + "\n" + self.task["desc"] + "\n"
 
-def create_task(parent_id, title, desc):
+def create_task(parent_id, title, desc, add_params=None):
     parent = find_task(ROOT_DATA.base_task, parent_id)
-    if parent is None:
-        print("Parent Task is not defined")
-    else:
+    if parent is not None:
         task_id = ROOT_DATA.last_task_id + 1
         task = {
                 "title":title,
@@ -26,8 +24,12 @@ def create_task(parent_id, title, desc):
                 "parent_id":parent_id,
                 "task_id":task_id
                 }
+        if add_params is not None:
+            task.update(add_params)
         parent.children.append(Task(task_id, parent_id, task))
         ROOT_DATA.last_task_id = task_id
+        return True
+    return False
 
 def start_task():
     pass
@@ -47,5 +49,7 @@ def find_task(root:Task, task_id:int) -> Task:
         if task.task_id is task_id:
             return task
         elif len(task.children) is not 0:
-            return find_task(task, task_id)
+            ret_task = find_task(task, task_id)
+            if ret_task is not None:
+                return ret_task
     return None
