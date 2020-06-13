@@ -38,10 +38,16 @@ def load_tasks_from_file(schema_file:str, data_file:str) -> Task:
     # Create a base task object
     base_task = Task(0, None, {"title":"Root","desc":"Main task"})
 
+    # Running task
+    running_task_id = None
+
+    # Add tasks iteratively 
     for task in tasks["tasks"]:
+        if "status" in task and task["status"] == "running":
+            running_task_id = task["task_id"]
         new_task = Task(task["task_id"], task["parent_id"], task)
         parent = find_task(base_task, task["parent_id"])
         if parent is not None:
             parent.children.append(new_task)
 
-    return base_task, tasks["tasks"][-1]["task_id"]
+    return base_task, tasks["tasks"][-1]["task_id"], running_task_id

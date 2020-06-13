@@ -1,6 +1,10 @@
+import datetime
+
+
 class ROOT_DATA():
     base_task = None
     last_task_id = 0
+    running_task_id = None
 
 
 class Task(object):
@@ -31,11 +35,29 @@ def create_task(parent_id, title, desc, add_params=None):
         return True
     return False
 
-def start_task():
-    pass
+def toggle_task(task_id:int, time:str=None):
+    task = find_task(ROOT_DATA.base_task, task_id)
+    if task is not None:
+        task = task.task
+        if "status" in task:
+            task["status"] = "running" if task["status"] == "stopped" else "stopped"
+        else:
+            task["status"] = "running"
+        
+        time = time if time != None else datetime.datetime.now().isoformat()
+        
+        if task["status"] is "running":
+            task["start_time"] = time
+            # Stop any other running task
+            if ROOT_DATA.running_task_id is not None and ROOT_DATA.running_task_id is not task_id:
+                running_tsk = ROOT_DATA.running_task_id
+                ROOT_DATA.running_task_id = None
+                toggle_task(running_tsk, time)
+            ROOT_DATA.running_task_id = task_id
+        else:
+            task["end_time"] = time
+            ROOT_DATA.running_task_id = None
 
-def stop_task():
-    pass
 
 def mark_complete():
     pass

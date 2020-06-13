@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from flask_restful import Resource, Api, reqparse
-from Task import ROOT_DATA, find_task, create_task
+from Task import ROOT_DATA, find_task, create_task, toggle_task
 
 app = Flask("planner", static_folder="webapp/build/static", template_folder="webapp/build")
 api = Api(app)
@@ -42,9 +42,23 @@ class TaskAddAPI(Resource):
         else:
             return {"status":"Failed to add task"}
 
+tasktoggleparser = reqparse.RequestParser()
+tasktoggleparser.add_argument("task_id", type=int)
+tasktoggleparser.add_argument("time", type=str, default=None)
+class TaskToggleAPI(Resource):
+    def post(self):
+        args = tasktoggleparser.parse_args()
+        toggle_task(args["task_id"],args["time"])
+        return {"status":"success"}
+
+class TempAPI(Resource):
+    def post(self):
+        return {"status":"success"}
+
 api.add_resource(TaskChildrenAPI, '/api/getChildren')
 api.add_resource(TaskSiblingAPI, '/api/getSiblings')
 api.add_resource(TaskAddAPI, '/api/addTask')
+api.add_resource(TaskToggleAPI, '/api/toggleTaskState')
 
 @app.route("/",defaults={'path':''})
 @app.route("/<path:path>")
