@@ -12,6 +12,9 @@ class Task extends React.Component{
                             this.props.task_data.start_time? new Date(this.props.task_data.start_time): new Date()),
             "ticker_id":this.props.task_data.status === "running"?setInterval(()=>this.ticker(),1000):0
         }
+        if (this.state.status === "running"){
+            this.props.stopTimer(()=>this.stop_gui_ticker());
+        }
     }
     ticker(){
         var time = this.state.time_delta;
@@ -70,9 +73,18 @@ class Task extends React.Component{
             }else{
                 new_state["status"] = "running";
                 new_state["ticker_id"] = setInterval(()=>this.ticker(),1000);
+                this.props.stopTimer(()=>this.stop_gui_ticker());
             }
             this.setState(new_state);
         })
+    }
+    stop_gui_ticker(){
+        clearTimeout(this.state.ticker_id);
+        this.setState({
+            "ticker_id":0,
+            "status":"stoppped",
+            "time_delta": this.state.time_delta
+        });
     }
     render(){
         var color = {background:"white"};

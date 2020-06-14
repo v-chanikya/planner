@@ -19,7 +19,8 @@ class Tasks extends React.Component{
                 {"tasks":[], "selected":0}
             ]
         }
-        this.action_state = "task"
+        this.action_state = "task";
+        this.previousRunningTask = null;
     }
     gettasks(API_path, task_id, pane_no, req_type){
         fetch(API_path, {
@@ -79,21 +80,28 @@ class Tasks extends React.Component{
             this.getchildtasks(task_id, pane_no);
         }
     }
+    stopTimer(func){
+        if (this.prevRunningTask != null){
+            this.prevRunningTask();
+        }
+        this.prevRunningTask = func;
+    }
     componentDidMount(){
         this.getchildtasks(0,0);
     }
-
     render(){
         return (
             <div>
                 {this.state.panestack.map((tasks,index)=>(
-                    <div id={"pane".concat(index)}>
+                    <div id={"pane".concat(index)} key={index}>
                         {(index === 0 && tasks.pane_type === "add")
                             ?<AddTask
                                 parentid={tasks.task_id}
                                 newtaskpane={(task_id,add)=>this.newtaskpane(task_id,add,tasks.pane_no)}/>
                             :tasks.tasks.map((task)=>(
                                 <Task
+                                    key={task.task_id}
+                                    stopTimer={func=>this.stopTimer(func)}
                                     task_data={task}
                                     selected={tasks.selected}
                                     subtasks={task_id=>this.getchildtasks(task_id,index)}
