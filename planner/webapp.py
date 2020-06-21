@@ -51,6 +51,31 @@ class TaskToggleAPI(Resource):
         toggle_task(args["task_id"],args["time"])
         return {"status":"success"}
 
+class TaskGetAPI(Resource):
+    def post(self):
+        args = parser.parse_args()
+        task = find_task(ROOT_DATA.base_task, args["task_id"])
+        if task is not None:
+            return task.task
+        return {"status":"success"}
+
+edittaskparser = reqparse.RequestParser()
+edittaskparser.add_argument("task_id",type=int)
+edittaskparser.add_argument("priority", type=str, default=None)
+edittaskparser.add_argument("planned_time", type=int, default=None)
+edittaskparser.add_argument("reterospection", type=str, default=None)
+edittaskparser.add_argument("status", type=str, default=None)
+class TaskEditAPI(Resource):
+    def post(self):
+        args = edittaskparser.parse_args()
+        task = find_task(ROOT_DATA.base_task, args["task_id"])
+        print(args["planned_time"])
+        if task is not None:
+            for key, val in args.items():
+                if key in ["priority","reterospection", "status", "planned_time"]:
+                    task.task[key] = val
+            return {"status":"success"}
+
 class TempAPI(Resource):
     def post(self):
         return {"status":"success"}
@@ -59,6 +84,8 @@ api.add_resource(TaskChildrenAPI, '/api/getChildren')
 api.add_resource(TaskSiblingAPI, '/api/getSiblings')
 api.add_resource(TaskAddAPI, '/api/addTask')
 api.add_resource(TaskToggleAPI, '/api/toggleTaskState')
+api.add_resource(TaskEditAPI, '/api/editTask')
+api.add_resource(TaskGetAPI, '/api/getTask')
 
 @app.route("/",defaults={'path':''})
 @app.route("/<path:path>")

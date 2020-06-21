@@ -22,6 +22,17 @@ class Tasks extends React.Component{
         this.action_state = "task";
         this.previousRunningTask = null;
     }
+    componentDidMount(){
+        this.getchildtasks(0,0);
+    }
+    /**
+     ***********************
+     * Invoke backend API's
+     ***********************
+     */
+    /**
+     * Get task panes
+     */
     gettasks(API_path, task_id, pane_no, req_type){
         fetch(API_path, {
             method: 'POST',
@@ -55,6 +66,11 @@ class Tasks extends React.Component{
             return;
         });
     }
+    /**
+     ********************
+     * View Manuplators
+     ********************
+     */
     getchildtasks(task_id, pane_no){
         if(this.action_state === "task"){
             this.gettasks("/api/getChildren", task_id, pane_no, "child");
@@ -64,6 +80,9 @@ class Tasks extends React.Component{
         if(this.action_state === "task")
             this.gettasks("/api/getSiblings", task_id, pane_no, "sibling");
     }
+    /**
+     * Invoked from child task/new task pane
+     */
     newtaskpane(task_id, add, pane_no){
         var task_panes = this.state.panestack.slice()
         if (add === true){
@@ -80,14 +99,46 @@ class Tasks extends React.Component{
             this.getchildtasks(task_id, pane_no);
         }
     }
+    /**
+     * Invoked from one task to change another tasks state
+     */
     stopTimer(func){
         if (this.prevRunningTask != null){
             this.prevRunningTask();
         }
         this.prevRunningTask = func;
     }
-    componentDidMount(){
-        this.getchildtasks(0,0);
+    /**
+     * Reload the task if requested by child
+     * This might be invoked if some task internal state is changed
+     */
+    reloadTask(task_id){
+        var panes = this.state.panestack.slice();
+        var pane_no = null;
+        var task_no = null;
+        for (var pane in panes){
+            for (var task in panes[pane].tasks){
+                if (panes[pane].tasks[task].task_id === task_id){
+                    pane_no = pane;
+                    task_no = task;
+                    break;
+                }
+            }
+        }
+        if (task_no != null && pane_no !=null){
+            fetch("/api/getTask", {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({"task_id":task_id})
+            })
+            .then(response=> response.json())
+            .then(data => {
+                panes[pane_no].tasks[task_no] = data;
+                this.setState(panes);
+            })
+        }
     }
     render(){
         return (
@@ -104,6 +155,7 @@ class Tasks extends React.Component{
                                     stopTimer={func=>this.stopTimer(func)}
                                     task_data={task}
                                     selected={tasks.selected}
+                                    reload={()=>this.reloadTask(task.task_id)}
                                     subtasks={task_id=>this.getchildtasks(task_id,index)}
                                     supertasks={task_id=>this.getsiblingtasks(task_id,index)}
                                     newtaskpane={(task_id,add)=>this.newtaskpane(task_id,add,index)}/>))

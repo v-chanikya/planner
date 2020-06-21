@@ -24,12 +24,20 @@
                         "type":"string"
                     },
                     "start_time":{
-                        "description":"The start time of the task",
-                        "type":"string"
+                        "description":"List of start times of the task",
+                        "type":"array",
+                        "items":{
+                            "description":"entry of time",
+                            "type":"string"
+                        }
                     },
                     "end_time":{
                         "description":"The end time of the task",
-                        "type":"string"
+                        "type":"array",
+                        "items":{
+                            "description":"entry of time",
+                            "type":"string"
+                        }
                     },
                     "planned_time":{
                         "description":"The time allocated for this task",
@@ -59,7 +67,8 @@
                         "description":"current state of task",
                         "enum":[
                             "running",
-                            "stopped"
+                            "stopped",
+                            "completed"
                         ]
                     },
                     "class":{

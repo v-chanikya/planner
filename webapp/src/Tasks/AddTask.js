@@ -1,5 +1,5 @@
 import React from 'react'
-import {IonText, IonList, IonItem, IonLabel, IonInput, IonTextarea, IonDatetime, IonButton} from '@ionic/react'
+import {IonRow, IonCol, IonText, IonList, IonItem, IonLabel, IonInput, IonTextarea, IonDatetime, IonButton} from '@ionic/react'
 
 class AddTask extends React.Component{
     constructor(props){
@@ -37,9 +37,11 @@ class AddTask extends React.Component{
     render(){
         return(
             <div>
+                <IonText color="medium" className="ion-text-center">
+                    <h2>Add Task</h2>
+                </IonText>
                 <IonText color="medium">
-                    <h3>Add Task</h3>
-                    <p>{this.props.parentid}</p>
+                    <p>Parent id:{this.props.parentid}</p>
                 </IonText>
                 <IonList>
                     <IonItem>
@@ -55,7 +57,14 @@ class AddTask extends React.Component{
                         <IonDatetime placeholder="Select Date" max="2025" name="deadline" onIonChange={this.update}></IonDatetime>
                     </IonItem>
                 </IonList>
-                <IonButton color="medium" expand="block" onClick={()=>this.addTask()}>Add Task</IonButton>
+                <IonRow>
+                    <IonCol size="6">
+                        <IonButton color="success" expand="block" onClick={()=>this.addTask()}>Add</IonButton>
+                    </IonCol>
+                    <IonCol size="6">
+                        <IonButton color="danger" expand="block" onClick={()=>this.props.newtaskpane(this.props.parentid, false)}>Cancel</IonButton>
+                    </IonCol>
+                </IonRow>
             </div>
         )
     }

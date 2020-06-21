@@ -47,7 +47,9 @@ def toggle_task(task_id:int, time:str=None):
         time = time if time != None else datetime.datetime.now().isoformat()
         
         if task["status"] is "running":
-            task["start_time"] = time
+            if "start_time" not in task:
+                task["start_time"] = []
+            task["start_time"].append(time)
             # Stop any other running task
             if ROOT_DATA.running_task_id is not None and ROOT_DATA.running_task_id is not task_id:
                 running_tsk = ROOT_DATA.running_task_id
@@ -55,7 +57,9 @@ def toggle_task(task_id:int, time:str=None):
                 toggle_task(running_tsk, time)
             ROOT_DATA.running_task_id = task_id
         else:
-            task["end_time"] = time
+            if "end_time" not in task:
+                task["end_time"] = []
+            task["end_time"].append(time)
             ROOT_DATA.running_task_id = None
 
 
