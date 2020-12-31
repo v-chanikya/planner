@@ -5,6 +5,7 @@ class ROOT_DATA():
     base_task = None
     last_task_id = 0
     running_task_id = None
+    planned_tasks = None
 
 
 class Task(object):

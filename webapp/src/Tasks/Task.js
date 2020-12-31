@@ -150,16 +150,16 @@ class Task extends React.Component{
         this.setState((state)=>{
             if (this.state.full_task_view){
                 var task_data = JSON.parse(JSON.stringify(this.props.task_data));
-            if(task_data.planned_time){
-                task_data.planned_time = this.get_date_string(task_data.planned_time);
-            }
+                if(task_data.planned_time){
+                    task_data.planned_time = this.get_date_string(task_data.planned_time);
+                }
                 return ({
                     "full_task_view":!this.state.full_task_view,
                     "task_data":task_data,
                     "changed":false
-                })
+                });
             }else{
-                return {"full_task_view":!this.state.full_task_view}
+                return {"full_task_view":!this.state.full_task_view};
             }
         });
     }

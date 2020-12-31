@@ -76,6 +76,20 @@ class TaskEditAPI(Resource):
                     task.task[key] = val
             return {"status":"success"}
 
+class PlannerGetToday(Resource):
+    def get(self):
+        if ROOT_DATA.planned_tasks is not None:
+            return [task.task for task in ROOT_DATA.planned_tasks["today_tasks"]]
+        else:
+            return []
+
+class PlannerGetWeek(Resource):
+    def get(self):
+        if ROOT_DATA.planned_tasks is not None:
+            return [task.task for task in ROOT_DATA.planned_tasks["week_tasks"]]
+        else:
+            return []
+
 class TempAPI(Resource):
     def post(self):
         return {"status":"success"}
@@ -86,6 +100,9 @@ api.add_resource(TaskAddAPI, '/api/addTask')
 api.add_resource(TaskToggleAPI, '/api/toggleTaskState')
 api.add_resource(TaskEditAPI, '/api/editTask')
 api.add_resource(TaskGetAPI, '/api/getTask')
+
+api.add_resource(PlannerGetToday, '/api/getToday')
+api.add_resource(PlannerGetWeek, '/api/getWeek')
 
 @app.route("/",defaults={'path':''})
 @app.route("/<path:path>")

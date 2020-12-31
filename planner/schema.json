@@ -82,6 +82,22 @@
                 }
 
             }
+        },
+        "today":{
+            "description":"Tasks to be completed today",
+            "type":"array",
+            "items":{
+                "description":"Id of the Task to be completed today",
+                "type":"number"
+            }
+        },
+        "week":{
+            "description":"Tasks to be completed this week",
+            "type":"array",
+            "items":{
+                "description":"Id of the Tasks to be completed this week",
+                "type":"number"
+            }
         }
     }
 }

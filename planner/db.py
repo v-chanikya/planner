@@ -12,14 +12,19 @@ def get_all_tasks(base_task:Task, tasks:list):
         tasks.append(task.task)
         get_all_tasks(task, tasks)
 
-def save_to_file(base_task:Task, data_file:str):
+def save_to_file(base_task:Task, planned_tasks, data_file:str):
     """
     Save all tasks to files
     """
     tasks=[]
     get_all_tasks(base_task, tasks)
+    jdata = {
+                "tasks":tasks,
+                "today":planned_tasks["today"],
+                "week":planned_tasks["week"]
+            }
     with open(data_file, "w") as tasks_file:
-        tasks_file.write(json.dumps({"tasks":tasks}, indent=4))
+        tasks_file.write(json.dumps(jdata, indent=4))
 
 def load_tasks_from_file(schema_file:str, data_file:str) -> Task:
     """
@@ -31,6 +36,14 @@ def load_tasks_from_file(schema_file:str, data_file:str) -> Task:
     with open(data_file, "r") as tasks_file:
         tasks = json.loads(tasks_file.read()) 
     jsonschema.validate(tasks, tasks_schema)
+
+    # Planned tasks list
+    planned_tasks = {
+                "today": tasks["today"],
+                "today_tasks": [],
+                "week": tasks["week"],
+                "week_tasks": []
+            }
 
     # Sort the tasks for tree construction
     tasks["tasks"].sort(key=lambda x : x.get("task_id"))
@@ -46,8 +59,14 @@ def load_tasks_from_file(schema_file:str, data_file:str) -> Task:
         if "status" in task and task["status"] == "running":
             running_task_id = task["task_id"]
         new_task = Task(task["task_id"], task["parent_id"], task)
+        # Construct tree
         parent = find_task(base_task, task["parent_id"])
         if parent is not None:
             parent.children.append(new_task)
+        # Add tasks to planned list
+        if task["task_id"] in planned_tasks["today"]:
+            planned_tasks["today_tasks"].append(new_task)
+        if task["task_id"] in planned_tasks["week"]:
+            planned_tasks["week_tasks"].append(new_task)
 
-    return base_task, tasks["tasks"][-1]["task_id"], running_task_id
+    return base_task, planned_tasks, tasks["tasks"][-1]["task_id"], running_task_id

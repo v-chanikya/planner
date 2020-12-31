@@ -11,7 +11,7 @@ SCHEMA_FILE = "planner/schema.json"
 
 def main():
     # Load tasks from file
-    ROOT_DATA.base_task, ROOT_DATA.last_task_id, ROOT_DATA.running_task_id = load_tasks_from_file(SCHEMA_FILE, DATA_FILE)
+    ROOT_DATA.base_task, ROOT_DATA.planned_tasks, ROOT_DATA.last_task_id, ROOT_DATA.running_task_id = load_tasks_from_file(SCHEMA_FILE, DATA_FILE)
 
     # start the webapp
     app.run(debug=True, host="127.0.0.1", port=8000)
@@ -19,7 +19,7 @@ def main():
 
     print("saving to file")
     # Save tasks to file
-    save_to_file(ROOT_DATA.base_task, DATA_FILE)
+    save_to_file(ROOT_DATA.base_task, ROOT_DATA.planned_tasks, DATA_FILE)
 
 if __name__ == "__main__":
     main()

@@ -4,7 +4,7 @@ import {IonApp, IonHeader, IonFooter, IonToolbar, IonTitle, IonContent, IonPage,
 import {IonReactRouter} from '@ionic/react-router'
 import '@ionic/react/css/core.css'
 import Menu from './Menu'
-import Home from './Home'
+import Home from './Home/Home'
 import Tasks from './Tasks/Tasks'
 import Planner from './Planner'
 import Guide from './Guide'
