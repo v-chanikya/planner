@@ -69,7 +69,6 @@ class TaskEditAPI(Resource):
     def post(self):
         args = edittaskparser.parse_args()
         task = find_task(ROOT_DATA.base_task, args["task_id"])
-        print(args["planned_time"])
         if task is not None:
             for key, val in args.items():
                 if key in ["priority","reterospection", "status", "planned_time"]:
@@ -94,17 +93,18 @@ class TempAPI(Resource):
     def post(self):
         return {"status":"success"}
 
-api.add_resource(TaskChildrenAPI, '/api/getChildren')
-api.add_resource(TaskSiblingAPI, '/api/getSiblings')
-api.add_resource(TaskAddAPI, '/api/addTask')
-api.add_resource(TaskToggleAPI, '/api/toggleTaskState')
-api.add_resource(TaskEditAPI, '/api/editTask')
-api.add_resource(TaskGetAPI, '/api/getTask')
+api.add_resource(TaskChildrenAPI, '/getChildren')
+api.add_resource(TaskSiblingAPI, '/getSiblings')
+api.add_resource(TaskAddAPI, '/addTask')
+api.add_resource(TaskToggleAPI, '/toggleTaskState')
+api.add_resource(TaskEditAPI, '/editTask')
+api.add_resource(TaskGetAPI, '/getTask')
 
-api.add_resource(PlannerGetToday, '/api/getToday')
-api.add_resource(PlannerGetWeek, '/api/getWeek')
+api.add_resource(PlannerGetToday, '/getToday')
+api.add_resource(PlannerGetWeek, '/getWeek')
 
 @app.route("/",defaults={'path':''})
 @app.route("/<path:path>")
 def index_page(path):
-    return render_template("index.html")
+    return "Hello planner"
+    #return render_template("index.html")

@@ -1,89 +1,12 @@
 {
     "tasks": [
         {
-            "task_id": 2,
+            "task_id": 1,
             "parent_id": 0,
-            "title": "Root task 2",
-            "desc": "Root task"
-        },
-        {
-            "task_id": 3,
-            "parent_id": 2,
-            "title": "Root task 3",
-            "desc": "Root task"
-        },
-        {
-            "title": "acx",
-            "desc": "asc",
-            "parent_id": 3,
-            "task_id": 103
-        },
-        {
-            "title": "asc",
-            "desc": "casc",
-            "parent_id": 103,
-            "task_id": 109
-        },
-        {
-            "title": "sdvq",
-            "desc": "csdv",
-            "parent_id": 2,
-            "task_id": 101
-        },
-        {
-            "title": "ascas",
-            "desc": "scascas",
-            "parent_id": 101,
-            "task_id": 104
-        },
-        {
-            "title": "asf",
-            "desc": "ascsa",
-            "parent_id": 101,
-            "task_id": 110
-        },
-        {
-            "title": "abcd",
-            "desc": "def",
-            "parent_id": 2,
-            "task_id": 105
-        },
-        {
-            "task_id": 100,
-            "parent_id": 0,
-            "title": "Root task 1",
-            "desc": "Root task"
-        },
-        {
-            "title": "asc",
-            "desc": "casc",
-            "parent_id": 100,
-            "task_id": 102
-        },
-        {
-            "title": "acd",
-            "desc": "def",
-            "parent_id": 100,
-            "task_id": 106
-        },
-        {
-            "title": "test u1",
-            "desc": "abc",
-            "parent_id": 100,
-            "task_id": 107
-        },
-        {
-            "title": "adef",
-            "desc": "asc",
-            "parent_id": 100,
-            "task_id": 108
-        },
-        {
-            "title": "with deadline",
-            "desc": "asc",
-            "parent_id": 100,
-            "task_id": 111,
-            "deadline_data": "2020-06-10T00:43:37.588+05:30"
+            "title": "Life",
+            "desc": "Planner away"
         }
-    ]
+    ],
+    "today": [],
+    "week": []
 }

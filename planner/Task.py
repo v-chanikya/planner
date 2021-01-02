@@ -1,4 +1,5 @@
 import datetime
+from conf import conf
 
 
 class ROOT_DATA():
@@ -19,8 +20,26 @@ class Task(object):
     def __str__(self):
         return str(self.task_id) + "\n" + self.task["title"] + "\n" + self.task["desc"] + "\n"
 
+# Using DFS for search
+def find_task_algo(root:Task, task_id:int) -> Task:
+    if root is None:
+        return find_task_algo(ROOT_DATA.base_task, task_id)
+    if root.task_id is task_id:
+        return root
+    for task in root.children:
+        if task.task_id is task_id:
+            return task
+        elif len(task.children) is not 0:
+            ret_task = find_task_algo(task, task_id)
+            if ret_task is not None:
+                return ret_task
+    return None
+
+from db import db_ops
+
+@db_ops
 def create_task(parent_id, title, desc, add_params=None):
-    parent = find_task(ROOT_DATA.base_task, parent_id)
+    parent = find_task_algo(ROOT_DATA.base_task, parent_id)
     if parent is not None:
         task_id = ROOT_DATA.last_task_id + 1
         task = {
@@ -36,8 +55,9 @@ def create_task(parent_id, title, desc, add_params=None):
         return True
     return False
 
+@db_ops
 def toggle_task(task_id:int, time:str=None):
-    task = find_task(ROOT_DATA.base_task, task_id)
+    task = find_task_algo(ROOT_DATA.base_task, task_id)
     if task is not None:
         task = task.task
         if "status" in task:
@@ -63,20 +83,10 @@ def toggle_task(task_id:int, time:str=None):
             task["end_time"].append(time)
             ROOT_DATA.running_task_id = None
 
-
+@db_ops
 def mark_complete():
     pass
 
-# Using DFS for search
+@db_ops
 def find_task(root:Task, task_id:int) -> Task:
-    if root.task_id is task_id:
-        return root
-    for task in root.children:
-        #print(task)
-        if task.task_id is task_id:
-            return task
-        elif len(task.children) is not 0:
-            ret_task = find_task(task, task_id)
-            if ret_task is not None:
-                return ret_task
-    return None
+    return find_task_algo(root, task_id)
